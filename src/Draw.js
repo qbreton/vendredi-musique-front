@@ -1,85 +1,19 @@
-import styled from 'styled-components';
 import env from "react-dotenv";
 import { useEffect, useState } from 'react';
-
-const DrawContainer = styled.div`
-    display: flex;
-    flex-direction: column;
-    max-width: 800px;
-    margin: auto;
-`
-
-const Columns = styled.div`
-    display: flex;
-    justify-content: space-between;
-`
-
-const ColumnContainer = styled.div`
-    display: flex;
-    flex-direction: column;
-    text-align: center;
-    min-width: 300px;
-`
-
-const ButtonsContainer = styled.div`
-    display: flex;
-    justify-content: center;
-    margin-bottom: 20px;
-`
-
-const Button = styled.div`
-    background-color: #4CAF50; /* Couleur de fond du bouton */
-    color: white; /* Couleur du texte du bouton */
-    border: none; /* Supprime la bordure du bouton */
-    padding: 10px 20px; /* Ajoute un espace intérieur au bouton */
-    text-align: center; /* Centre le texte dans le bouton */
-    text-decoration: none; /* Supprime le soulignement du texte */
-    display: inline-block; /* Affiche le bouton comme un élément en ligne */
-    font-size: 16px; /* Taille de police du texte */
-    margin: 5px; /* Ajoute une marge autour du bouton */
-    cursor: pointer; /* Change le curseur de la souris en pointeur au survol */
-    border-radius: 5px; /* Ajoute des coins arrondis au bouton */
-    &:hover {
-        background-color: #2D6A2F;
-    }
-    &.danger {
-        background-color: #d95353;
-        &:hover {
-            background-color: #9f4444;
-        }
-    }
-`
-
-const Name = styled.div`
-    border: none;
-    padding: 10px 20px;
-    background-color: #d6dee5;
-    border-radius: 4px;
-    &.even {
-        background-color: #f6fbff;
-    }
-`
-
-const AddName = styled.div`
-    margin-top: 20px;
-    cursor: pointer;
-    img {
-        width: 25px;
-        filter: invert(20%) sepia(79%) saturate(2476%) hue-rotate(86deg) brightness(118%) contrast(119%);
-    }
-`
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTrash } from "@fortawesome/free-solid-svg-icons";
 
 function Draw() {
     const apiUrl = env.API_URL;
     const [names, setNames] = useState({"notDrawn": [], "drawn": []});
     const [newName, setNewName] = useState("");
-    const [adding, setAdding] = useState(false);
 
     useEffect(() => {
         fetch(`${apiUrl}/names`)
         .then(response => response.json())
         .then(data => {
-            setNames(data)
+            setNames(data);
+            names.notDrawn.map(name => console.log(name))
         })
         .catch(error => {
             console.error(error);
@@ -99,6 +33,17 @@ function Draw() {
 
     function reset() {
         fetch(`${apiUrl}/reset`, {method: "POST"})
+        .then(response => response.json())
+        .then(data => {
+            setNames(data)
+        })
+        .catch(error => {
+            console.error(error);
+        });
+    }
+
+    function deleteName(name) {
+        fetch(`${apiUrl}/names/${name}`, {method: "DELETE"})
         .then(response => response.json())
         .then(data => {
             setNames(data)
@@ -130,40 +75,64 @@ function Draw() {
     }
 
     return (
-        <DrawContainer>
-            <ButtonsContainer>
-                <Button onClick={() => draw()}>Tirer au sort</Button>
-                <Button className="danger" onClick={() => reset()}>Remettre à zéro</Button>
-            </ButtonsContainer>
-            <Columns>
-                <ColumnContainer>
-                    <h2>Pas encore tirés au sort</h2>
-                    <div>
-                        { names.notDrawn.map((name, index) => <Name className={`${index % 2 === 0 ? 'even' : ''}`} key={index}>{name}</Name>)}
-                        <AddName>
-                            { !adding && <img src='./plus.svg' onClick={() => setAdding(!adding)}/> }
-                            { adding && (
-                                <div>
-                                    <div>
-                                        <input type="text" onChange={(event) => setNewName(event.target.value)}/>
-                                    </div>
-                                    <div>
-                                        <Button className='danger' onClick={() => setAdding(false)}>Annuler</Button>
-                                        <Button onClick={() => addName(newName)}>Ajouter</Button>
-                                    </div>
-                                </div>
-                            )}
-                        </AddName>
-                    </div>
-                </ColumnContainer>
-                <ColumnContainer>
-                    <h2>Déjà tirés au sort</h2>
-                    <div>
-                        { names.drawn.map((name, index) => <Name className={`${index % 2 === 0 ? 'even' : ''}`} key={index}>{name}</Name>)}
-                    </div>
-                </ColumnContainer>
-            </Columns>
-        </DrawContainer>
+        <div className="max-w-800px m-0-auto p-4">
+            <h1 className='text-5xl text-center mb-8 text-gray-800'>Vendredi musique</h1>
+            <div className="flex justify-around">
+                <div className="w-5/12 bg-white rounded p-6 shadow-lg untouched">
+                    <h2 className="text-2xl mb-6 text-gray-700">Personnes à choisir</h2>
+                    <ul className="list-none p-0 m-0">
+                        { names.notDrawn.map((name, index) => (
+                            <li className="p-2 m-2 bg-gray-100 rounded-md border-gray-500 flex justify-between align-baseline hover:bg-red-800 hover:text-white pointer-events-none" key={index}>
+                                <span>{name}</span>
+                                <span>
+                                    <FontAwesomeIcon className="w-3 cursor-pointer pointer-events-auto" icon={faTrash} onClick={() => deleteName(name)}></FontAwesomeIcon>
+                                </span>
+                            </li> 
+                        ))}
+                    </ul>
+                    <form className="mt-6">
+                        <label htmlFor="new-person" className='text-base text-gray-600 block mb-2'>Ajouter une personne :</label>
+                        <div className='flex justify-center mb-4'>
+                            <input onChange={(event) => setNewName(event.target.value)} value={newName} type="text" className='p-2 mr-2 rounded-md w-full border-gray-400 border-solid border-2 text-base' id="new-person" name="new-person" placeholder="Nom de la personne" />
+                            <button onClick={(event) => {
+                                event.stopPropagation();
+                                addName(newName);
+                            }} type="button" className="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm p-2.5 text-center inline-flex items-center mr-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">
+                                <svg width="20" height="20"><path d="M5 10 H15 M10 5 V15" stroke="white" strokeWidth="2"/></svg>
+                                <span className="sr-only">Ajouter une personne</span>
+                            </button>
+                        </div>
+                    </form>
+                    <button className="relative inline-flex items-center justify-center p-0.5 mb-2 mr-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-teal-300 to-lime-300 group-hover:from-teal-300 group-hover:to-lime-300 dark:text-white dark:hover:text-gray-900 focus:ring-4 focus:outline-none focus:ring-lime-200 dark:focus:ring-lime-800"
+                        onClick={() => draw()}
+                    >
+                        <span className="relative px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-white rounded-md group-hover:bg-opacity-0 text-gray-900 hover:text-white">
+                        Tirer au sort
+                        </span>
+                    </button>
+                </div>
+                <div className="w-5/12 bg-white rounded p-6 shadow-lg touched">
+                    <h2 className="text-2xl mb-6 text-gray-700">Personnes déjà choisies</h2>
+                    <ul className="list-none p-0 m-0">
+                        { names.drawn.map((name, index) => (
+                            <li className="p-2 m-2 bg-gray-100 rounded-md border-gray-500 flex justify-between hover:bg-red-800 hover:text-white pointer-events-none" key={index}>
+                                <span>{name}</span>
+                                <span>
+                                    <FontAwesomeIcon className="w-3 cursor-pointer pointer-events-auto" icon={faTrash} onClick={() => deleteName(name)}></FontAwesomeIcon>
+                                </span>
+                            </li> 
+                        ))}
+                    </ul>
+                    <button className="relative inline-flex items-center justify-center p-0.5 mb-2 mr-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-pink-500 to-orange-400 group-hover:from-pink-500 group-hover:to-orange-400 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-pink-200 dark:focus:ring-pink-800"
+                        onClick={() => reset()}
+                    >
+                        <span className="relative px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-white rounded-md group-hover:bg-opacity-0 text-gray-900 hover:text-white">
+                        Remettre à zéro
+                        </span>
+                    </button>
+                </div>
+            </div>
+        </div>
     )
 }
 
