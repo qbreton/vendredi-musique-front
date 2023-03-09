@@ -2,6 +2,7 @@
   "name": "vendredi-musique",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://qbreton.github.io/vendredi-musique-front",
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.3.0",
     "@fortawesome/free-solid-svg-icons": "^6.3.0",
@@ -16,7 +17,9 @@
     "styled-components": "^5.3.8",
     "web-vitals": "^2.1.4"
   },
-  "scripts": {
+  "scripts": { 
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build",
     "start": "react-dotenv && react-scripts start",
     "build": "react-dotenv && react-scripts build",
     "test": "react-scripts test",
@@ -42,10 +45,12 @@
   },
   "react-dotenv": {
     "whitelist": [
-      "API_URL"
+      "API_URL",
+      "API_URL_DEV"
     ]
   },
   "devDependencies": {
+    "gh-pages": "^5.0.0",
     "tailwindcss": "^3.2.7"
   }
 }
