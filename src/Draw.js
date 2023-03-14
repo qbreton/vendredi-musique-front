@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faClockRotateLeft, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { faArrowLeftLong, faClockRotateLeft, faTrash } from "@fortawesome/free-solid-svg-icons";
 import styled from "styled-components";
 import Modal from './Modal';
 
@@ -91,6 +91,21 @@ function Draw() {
         });
     }
 
+    function undo(name) {
+        if (name === "") { return; }
+
+        fetch(`${apiUrl}/${name}/undo`, {
+            method: "POST"
+        })
+        .then(response => response.json())
+        .then(data => {
+            setPersons(data);
+        })
+        .catch(error => {
+            console.error(error);
+        });
+    }
+
     return (
         <div className="max-w-800px m-0-auto p-4">
             <h1 className='text-5xl text-center mb-8 text-gray-800'>Vendredi musique</h1>
@@ -143,7 +158,14 @@ function Draw() {
                     <ul className="list-none p-0 m-0">
                         { persons.drawn.map((person, index) => (
                             <ListLi className={`p-2 m-2 bg-gray-100 rounded-md border-gray-500 flex justify-between`} key={index}>
-                                <span>{person.name}</span>
+                                <span>
+                                    <FontAwesomeIcon 
+                                        className='mr-4 cursor-pointer' 
+                                        icon={faArrowLeftLong}
+                                        onClick={() => undo(person.name)}
+                                    ></FontAwesomeIcon>
+                                    {person.name}
+                                </span>
                                 <span>
                                     <FontAwesomeIcon className="w-3 mr-2 cursor-pointer" icon={faClockRotateLeft} 
                                         onClick={() => {
