@@ -21,8 +21,6 @@ function Draw() {
 
     const [persons, setPersons] = useState({"notDrawn": [], "drawn": []});
     const [newName, setNewName] = useState("");
-    const [drawnLiHover, setDrawnLiHover] = useState(false);
-    const [notDrawnLiHover, setNotDrawnLiHover] = useState(false);
     const [modalVisible, setModalVisible] = useState(false);
     const [modalData, setModalData] = useState({"name":"", dates:[]});
 
