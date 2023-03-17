@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "/vendredi-musique-front/static/css/main.27feea07.css",
-    "main.js": "/vendredi-musique-front/static/js/main.9bcc8205.js",
+    "main.css": "/vendredi-musique-front/static/css/main.250a0037.css",
+    "main.js": "/vendredi-musique-front/static/js/main.e96b623d.js",
     "static/js/787.80037c9e.chunk.js": "/vendredi-musique-front/static/js/787.80037c9e.chunk.js",
     "index.html": "/vendredi-musique-front/index.html",
-    "main.27feea07.css.map": "/vendredi-musique-front/static/css/main.27feea07.css.map",
-    "main.9bcc8205.js.map": "/vendredi-musique-front/static/js/main.9bcc8205.js.map",
+    "main.250a0037.css.map": "/vendredi-musique-front/static/css/main.250a0037.css.map",
+    "main.e96b623d.js.map": "/vendredi-musique-front/static/js/main.e96b623d.js.map",
     "787.80037c9e.chunk.js.map": "/vendredi-musique-front/static/js/787.80037c9e.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.27feea07.css",
-    "static/js/main.9bcc8205.js"
+    "static/css/main.250a0037.css",
+    "static/js/main.e96b623d.js"
   ]
 }
